@@ -29,6 +29,8 @@ class AltoTechCEO(PodcastAgent, PersonaTraits):
             "Express authentic enthusiasm",
             "Credit team and partners appropriately",
             "Don't keep using Absolutely"
+            "Questions assumptions with 'I think...'",
+            "Occationally say 'Hmm...'"
         ]
     
     def get_system_prompt(self) -> str:

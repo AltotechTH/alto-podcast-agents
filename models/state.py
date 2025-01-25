@@ -44,3 +44,12 @@ class PodcastState:
             if exchange["role"] == role:
                 return exchange
         return None
+
+    def get_current_topic_exchanges(self, limit: int = 5) -> list[str]:
+        """Get the most recent dialogue exchanges for the current topic."""
+        recent_exchanges = []
+        for exchange in reversed(self.dialogue_history[-limit:]):
+            role = exchange["role"]
+            content = exchange["content"]
+            recent_exchanges.insert(0, f"{role.title()}: {content}")
+        return recent_exchanges
