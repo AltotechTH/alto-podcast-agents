@@ -28,9 +28,10 @@ class AltoTechCEO(PodcastAgent, PersonaTraits):
             "Keep responses under 1-2 sentences",
             "Express authentic enthusiasm",
             "Credit team and partners appropriately",
-            "Don't keep using Absolutely"
+            "Don't keep using Absolutely",
             "Questions assumptions with 'I think...'",
-            "Occationally say 'Hmm...'"
+            "Occasionally say 'Hmm...'",
+            "Avoid using asterisks (*) for emphasis"
         ]
     
     def get_system_prompt(self) -> str:

@@ -1,19 +1,32 @@
 # altotech_podcast/ui/prompts.py
+import json
 from typing import Any
-
+import os
+from dotenv import load_dotenv
 from rich.prompt import Prompt, Confirm
 from pydantic_ai import Agent
+from openai import AsyncAzureOpenAI
+from pydantic_ai.models.openai import OpenAIModel
 from context.company import CompanyContext
 from context.topics import get_topic_prompt
 from models.enums import TopicArea
+
+load_dotenv()
 
 class PodcastPrompts:
     """Handles user input prompts during the podcast."""
     
     def __init__(self):
         """Initialize the LLM agent for decision making."""
+        model = os.getenv('AZURE_OPENAI_MINI_MODEL')
+        azure_client = AsyncAzureOpenAI(
+            azure_endpoint=os.getenv('AZURE_OPENAI_ENDPOINT'),
+            api_version=os.getenv('AZURE_OPENAI_API_VERSION'),
+            api_key=os.getenv('AZURE_OPENAI_API_KEY'),
+        )
+        openai_model = OpenAIModel(model, openai_client=azure_client)
         self.agent = Agent(
-            "openai:gpt-3.5-turbo",  # Using a smaller model for simple decisions
+            openai_model,
             system_prompt="""You are a podcast producer helping to manage the flow of conversation.
 Your job is to analyze the recent conversation and company context to decide if:
 1. The current topic has been sufficiently covered and it's time to move on
@@ -26,13 +39,43 @@ Base your decisions on:
 Keep the podcast engaging but concise."""
         )
         self.company = CompanyContext()
+        self.last_processed_timestamp = None
+        
+    def clear_submissions(self) -> None:
+        """Clear all submissions from the submissions.json file."""
+        try:
+            with open('qr/submissions.json', 'w') as f:
+                json.dump([], f)
+        except Exception as e:
+            print(f"Error clearing submissions: {e}")
     
-    @staticmethod
-    def get_audience_question() -> str | None:
-        """Get an audience question if available."""
-        if Confirm.ask("\n👥 Audience question?", default=False):
-            return Prompt.ask("Enter question")
-        return None
+    def get_audience_question(self) -> str | None:
+        """Get an audience question from submissions.json if available."""
+        try:
+            # Read submissions from file
+            with open('qr/submissions.json', 'r') as f:
+                submissions = json.loads(f.read())
+            
+            # Filter and sort submissions by timestamp
+            new_submissions = [
+                s for s in submissions 
+                if (self.last_processed_timestamp is None or 
+                    s['timestamp'] > self.last_processed_timestamp)
+            ]
+            
+            if not new_submissions:
+                return None
+                
+            # Get the oldest unprocessed submission
+            submission = sorted(new_submissions, key=lambda x: x['timestamp'])[0]
+            self.last_processed_timestamp = submission['timestamp']
+            
+            # Format the question with the submitter's name
+            return f"{submission['name']} asks: {submission['question']}"
+            
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Error reading submissions: {e}")
+            return None
 
     async def should_end_podcast(self, topic: TopicArea, recent_exchanges: list[str]) -> bool:
         """Determine if we should end the podcast based on topic coverage."""
@@ -56,18 +99,14 @@ Key Questions:
 Recent conversation:
 {chr(10).join(recent_exchanges)}
 
-Should we move to the next topic? Consider carefully and be conservative in your decision.
-The discussion should thoroughly explore the current topic before moving on.
+Should we move to the next topic? Consider:
+1. Has this topic been sufficiently covered given the context?
+2. Have we addressed the key questions for this topic?
+3. Are there still important points to discuss?
+4. Is this a natural point to transition?
 
-Specific requirements to move on:
-1. Have ALL key questions been addressed in detail?
-2. Has the discussion explored multiple perspectives and implications?
-3. Have we covered both high-level strategy and specific implementation details?
-4. Has there been a natural conclusion to the current discussion thread?
-5. Have we discussed concrete examples and applications?
-
-Only respond 'yes' if requirements reasonably are met. Otherwise respond 'no'.
-Include a brief explanation focusing on what aspects still need more discussion."""
+We should move on if they are sufficiently met.
+Respond with either 'yes' or 'no' and a brief explanation."""
 
         result = await self.agent.run(prompt)
         decision = result.data.lower().strip().startswith('yes')

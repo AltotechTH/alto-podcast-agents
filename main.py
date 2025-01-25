@@ -17,6 +17,7 @@ async def run_podcast():
     guest = AltoTechCEO()
     
     # Start podcast
+    prompts.clear_submissions()
     console.print_header()
     
     # Opening

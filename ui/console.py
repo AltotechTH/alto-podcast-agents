@@ -46,8 +46,8 @@ class PodcastConsole:
         self.console.print(f"[{SpeakerStyle.INFO}]{message}[/{SpeakerStyle.INFO}]")
     
     def print_topic(self, topic: str) -> None:
-        """Print new topic header."""
-        self.console.print(f"\n📌 [bold yellow]New Topic: {topic}[/bold yellow]\n")
+        """Print topic header."""
+        self.console.print(f"\n📌 [bold yellow]Topic: {topic}[/bold yellow]\n")
     
     def print_dialogue(self, speaker: str, message: str, style: SpeakerStyle) -> None:
         """Print formatted dialogue."""
