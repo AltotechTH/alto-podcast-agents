@@ -7,9 +7,9 @@ from agents.base import PodcastAgent, PersonaTraits
 class AltoTechCEO(PodcastAgent, PersonaTraits):
     """AltoTech CEO personality and knowledge."""
     
-    def __init__(self, model: str = 'openai:gpt-4o'):
+    def __init__(self):
         self.company_context = CompanyContext()
-        super().__init__(model)
+        super().__init__()
     
     @property
     def personality_traits(self) -> list[str]:

@@ -24,6 +24,7 @@ class ElonMuskHost(PodcastAgent, PersonaTraits):
     @property
     def communication_style(self) -> list[str]:
         return [
+            "Avoid using asterisks (*) for emphasis",
             "Ask short, direct questions",
             "Show genuine curiosity about technical solutions",
             "Make occasional witty remarks about AI and tech",
