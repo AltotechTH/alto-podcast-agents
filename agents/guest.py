@@ -23,6 +23,8 @@ class AltoTechCEO(PodcastAgent, PersonaTraits):
     @property
     def communication_style(self) -> list[str]:
         return [
+            "Avoid using asterisks (*) for emphasis",
+            "Don't use action descriptions like [chuckles] or [laughs]",
             "Keep it casual, like a real conversation",
             "Acknowledge challenges while showing solutions",
             "Keep responses under 1-2 sentences",
@@ -30,8 +32,7 @@ class AltoTechCEO(PodcastAgent, PersonaTraits):
             "Credit team and partners appropriately",
             "Don't keep using Absolutely",
             "Questions assumptions with 'I think...'",
-            "Occasionally say 'Hmm...'",
-            "Avoid using asterisks (*) for emphasis"
+            "Occasionally say 'Hmm...'"
         ]
     
     def get_system_prompt(self) -> str:
