@@ -3,14 +3,19 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 class CompanyMetrics(BaseModel):
-    """Key business metrics for the company."""
-    revenue: str = "$0.7M"
+    """Key business metrics for AltoTech Global."""
+    revenue: str = "$0.7M (2024)"
     growth_rate: str = "388% YoY"
-    funding_raised: str = "$2.4M"
+    funding_raised: str = "$2.4M (including $50K Founders, $250K Seed, $2.1M Pre-A)"
     managed_area: str = "3M+ sqm"
     target_raise: str = "$8M Series A"
-    energy_savings: str = "40%"
+    energy_savings: str = "Up to 40%"
     payback_period: str = "<3 years"
+    properties_commissioned: str = "68+"
+    carbon_reduction: str = "2.8M KgCO2eq"
+    energy_managed: str = "129 GWh"
+    customer_retention: str = "95%"
+    customer_conversion: str = "25%"
 
 class CustomerSuccess(BaseModel):
     """Customer success stories and metrics."""
@@ -20,47 +25,80 @@ class CustomerSuccess(BaseModel):
     testimonial: str | None = None
 
 class CompanyContext(BaseModel):
-    """Complete company context and knowledge base."""
+    """AltoTech Global company context from official documents."""
     name: str = "AltoTech Global"
-    description: str = "Energy management platform optimizing HVAC systems"
+    description: str = "AI and data-driven solutions provider managing air-side and water-side systems to reduce energy consumption, enhance operational efficiency, and drive sustainability across diverse industries."
     metrics: CompanyMetrics = Field(default_factory=CompanyMetrics)
     
     key_milestones: list[str] = [
-        "First foreign customer acquisition in Singapore",
-        "Top 10 startups award at APAC Climate Tech Summit",
-        "Premium customer testimonials from 5-star hotels",
-        "Strategic MOUs with major property developers",
-        "Patent pending for AI-driven HVAC optimization",
-        "Launch of real-time energy monitoring dashboard"
+        "MOU with PEA in Thailand for national energy initiatives",
+        "Partnership with C&W Services in Singapore",
+        "Partnership with Telemax and Hong Kong Science Park",
+        "Top 10 E27 Startups in Singapore",
+        "Only AI and software focused member of Tridium in Thailand, 1 of only 3 next to Honeywell and Johnson Controls in Thailand"
     ]
     
     success_stories: list[CustomerSuccess] = [
         CustomerSuccess(
-            name="Luxury Hotel Group",
-            location="Bangkok",
-            results={"energy_savings": "45%", "annual_cost_reduction": "$120K"},
-            testimonial="AltoTech's system paid for itself in under 2 years"
-        ),
-        CustomerSuccess(
-            name="Premium Mall",
-            location="Singapore",
-            results={"energy_savings": "38%", "co2_reduction": "500 tons/year"},
-            testimonial="Helped us achieve our sustainability goals ahead of schedule"
-        )
+        name="JW Marriott & St. Regis",
+        location="Thailand",
+        results={
+            "energy_savings": "Up to 40%",
+            "operational_efficiency": "300%",
+            "payback_period": "<3 years"
+        },
+        testimonial="The ROI is reasonably fast; it is obviously a big win while also providing opportunities such as improving guest experience"
+    ),
+    
+    # Commercial Buildings
+    CustomerSuccess(
+        name="MBK Center",
+        location="Thailand",
+        results={
+            "building_performance": "Improved",
+            "energy_savings": "Significant",
+            "indoor_air_quality": "Enhanced"
+        },
+        testimonial="Energy management solutions have significantly reduced operational costs, improved building performance and indoor air quality"
+    ),
+    
+    CustomerSuccess(
+        name="Central Plaza Rama 9",
+        location="Thailand",
+        results={
+            "building_performance": "Improved",
+            "operational_costs": "Reduced",
+            "indoor_air_quality": "Enhanced"
+        }
+    ),
+    
+    # International
+    CustomerSuccess(
+        name="Great Eastern",
+        location="Singapore",
+        results={
+            "automation": "Complete",
+            "manpower_efficiency": "Significant",
+            "task_management": "AI-integrated"
+        },
+        testimonial="Previously, we relied on manual data recording and reporting. With Alto, everything is automated, reducing manpower significantly. The AI integration helps manage tasks, prioritize, and organize schedules effectively"
+    )
+    
+    
     ]
     
     challenges_overcome: list[str] = [
-        "Building trust with conservative property managers",
-        "Adapting AI models to different building types",
-        "Scaling installation and support across countries",
-        "Managing varying regulatory requirements"
+        "Scaling across multiple property types (hotels, offices, hospitals)",
+        "Integration with diverse building management systems",
+        "Market education on AI-driven energy management",
+        "Regional expansion and localization"
     ]
     
     future_goals: list[str] = [
-        "Expand to 5 new markets in Asia-Pacific",
-        "Launch new product for smaller commercial buildings",
-        "Develop predictive maintenance capabilities",
-        "Achieve carbon credit certification"
+        "Expand further in SEA markets",
+        "Develop cutting-edge AI capabilities",
+        "Launch new platform for demand response and energy trading",
+        "Advance towards smart city management initiatives"
     ]
     
     def format_for_prompt(self) -> str:
@@ -75,6 +113,12 @@ Key Metrics:
 - Typical Energy Savings: {self.metrics.energy_savings}
 - Current Funding: {self.metrics.funding_raised}
 - Target Raise: {self.metrics.target_raise}
+- Carbon Reduction: {self.metrics.carbon_reduction}
+- Energy Managed: {self.metrics.energy_managed}
+- Properties Commissioned: {self.metrics.properties_commissioned}
+- Payback Period: {self.metrics.payback_period}
+- Customer Retention: {self.metrics.customer_retention}
+- Customer Conversion: {self.metrics.customer_conversion}
 
 Recent Milestones:
 {chr(10).join(f"- {m}" for m in self.key_milestones)}

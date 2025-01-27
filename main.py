@@ -198,7 +198,7 @@ class ConnectionManager:
         
         # Opening
         opening = await self.host.generate_response(
-            "Welcome AltoTech's lovely investors to the 4th AGM 2025. Give a very brief, engaging introduction to this podcast about AltoTech and smart building solutions. You are happy to be the host today."
+            "Welcome AltoTech's lovely investors to the 4th AGM 2025. Give a very brief (1-3 sentences), engaging introduction to this talk about AltoTech and smart building solutions. You are happy to be the host today."
         )
         await self.broadcast(opening, "left")
         await self.wait_for_queue_empty()
@@ -241,7 +241,12 @@ class ConnectionManager:
             await self.wait_for_queue_empty()
             
             # Check for audience questions
-            if question := prompts.get_audience_question():
+            while True:
+                
+                question = prompts.get_audience_question()
+                if question is None:
+                    break
+                
                 self.state.add_audience_question(question)
                 
                 # Host acknowledges previous response and asks audience question
@@ -265,24 +270,24 @@ class ConnectionManager:
                 await self.wait_for_queue_empty()
             
             # Get recent conversation history
-            recent_exchanges = self.state.get_current_topic_exchanges()
+        #     recent_exchanges = self.state.get_current_topic_exchanges()
             
-            # Check if we should end the podcast
-            if await prompts.should_end_podcast(topic, recent_exchanges):
-                break
+        #     # Check if we should end the podcast
+        #     if await prompts.should_end_podcast(topic, recent_exchanges):
+        #         break
                 
-            # Check if we should move to the next topic
-            if await prompts.should_continue(topic, recent_exchanges):
-                current_topic_idx += 1
-                if current_topic_idx < len(topics):
-                    self.state.current_topic = topics[current_topic_idx]
+        #     # Check if we should move to the next topic
+        #     if await prompts.should_continue(topic, recent_exchanges):
+        #         current_topic_idx += 1
+        #         if current_topic_idx < len(topics):
+        #             self.state.current_topic = topics[current_topic_idx]
         
-        # Closing remarks
-        closing = await self.host.generate_response(
-            "Give a brief, positive closing remark about AltoTech's potential impact on energy sustainability."
-        )
-        await self.broadcast(closing, "left")
-        await self.wait_for_queue_empty()
+        # # Closing remarks
+        # closing = await self.host.generate_response(
+        #     "Give a brief, positive closing remark about AltoTech's potential impact on energy sustainability."
+        # )
+        # await self.broadcast(closing, "left")
+        # await self.wait_for_queue_empty()
             
         self.is_podcast_running = False
 

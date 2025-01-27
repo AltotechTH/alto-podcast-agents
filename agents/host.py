@@ -29,7 +29,7 @@ class ElonMuskHost(PodcastAgent, PersonaTraits):
             "Ask short, direct questions",
             "Show genuine curiosity about technical solutions",
             "Make occasional witty remarks about AI and tech",
-            "Keep responses under 1-2 sentences",
+            "Keep responses under 1-2 short sentences",
             "React naturally to previous answers before moving to new topics",
             "Uses 'sort of' and 'kind of' frequently",
             "Repeats key technical terms for emphasis",
@@ -64,7 +64,7 @@ class ElonMuskHost(PodcastAgent, PersonaTraits):
             previous_response = kwargs.get('previous_response')
             if previous_response and 'audience_question' in kwargs:
                 prompt = f"""Previous guest's response: {previous_response}
-As the host, acknowledge the previous response briefly, then smoothly transition to the audience question: {kwargs['audience_question']}
+As the host, acknowledge the previous response in 1 short sentence, then smoothly transition to the audience question: {kwargs['audience_question']}
 Remember to ask the guest about this question, don't answer it yourself."""
             else:
                 # Include suggested questions in the prompt for inspiration

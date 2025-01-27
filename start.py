@@ -22,7 +22,7 @@ async def run_podcast():
     
     # Opening
     opening = await host.generate_response(
-        "Welcome AltoTech's lovely investors to the 4th AGM 2025. Give a very brief, engaging introduction to this podcast about AltoTech and smart building solutions. You are happy to be the host today."
+        "Welcome AltoTech's lovely investors to the 4th AGM 2025. Give a very brief (1-3 sentences), engaging introduction to this talk about AltoTech and smart building solutions. You are happy to be the host today."
     )
     console.print_host(opening)
     

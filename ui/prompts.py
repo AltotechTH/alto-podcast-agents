@@ -25,6 +25,9 @@ class PodcastPrompts:
             api_key=os.getenv('AZURE_OPENAI_API_KEY'),
         )
         openai_model = OpenAIModel(model, openai_client=azure_client)
+        
+        self.latest_answered_q_index = 0
+
         self.agent = Agent(
             openai_model,
             system_prompt="""You are a podcast producer helping to manage the flow of conversation.
@@ -55,6 +58,17 @@ Keep the podcast engaging but concise."""
             # Read submissions from file
             with open('qr/submissions.json', 'r') as f:
                 submissions = json.loads(f.read())
+                
+            if submissions:
+                selected_index = self.latest_answered_q_index
+                if selected_index >= len(submissions):
+                    return None
+                
+                submission = submissions[selected_index]
+                self.latest_answered_q_index = selected_index + 1
+                return f"{submission['name']} asks: {submission['question']}"
+            else:
+                return None
             
             # Filter and sort submissions by timestamp
             new_submissions = [
